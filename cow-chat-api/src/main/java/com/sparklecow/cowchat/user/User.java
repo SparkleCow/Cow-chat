@@ -1,11 +1,9 @@
 package com.sparklecow.cowchat.user;
 
 import com.sparklecow.cowchat.chat.Chat;
+import com.sparklecow.cowchat.common.BaseAuditing;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,13 +12,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseAuditing implements UserDetails {
+
+    private static final int LAST_ACTIVATE_INTERVAL = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -69,6 +70,6 @@ public class User implements UserDetails {
 
     @Transient
     public boolean isUserOnline(){
-        return lastSeen != null && !lastSeen.isBefore(LocalDateTime.now().minusMinutes(5));
+        return lastSeen != null && !lastSeen.isBefore(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
     }
 }
