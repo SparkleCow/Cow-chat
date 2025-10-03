@@ -43,7 +43,6 @@ public class User extends BaseAuditing implements UserDetails {
 
     private LocalDateTime lastSeen;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "participants")
     private List<Chat> chats = new ArrayList<>();
 

@@ -18,4 +18,15 @@ public class UserMapper {
                 .username(userRequestDto.username())
                 .build();
     }
+
+    public UserResponseDto toUserResponseDto(User user) {
+        return new UserResponseDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getImagePath(),
+                user.getLastSeen(),
+                user.isUserOnline()
+        );
+    }
 }
