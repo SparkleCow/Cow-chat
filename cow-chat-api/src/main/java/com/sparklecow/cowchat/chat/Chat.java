@@ -6,6 +6,8 @@ import com.sparklecow.cowchat.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,7 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "chats")
 @Builder
-public class Chat extends BaseAuditing {
+public class Chat extends BaseAuditing implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

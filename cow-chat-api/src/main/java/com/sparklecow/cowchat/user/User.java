@@ -1,13 +1,17 @@
 package com.sparklecow.cowchat.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparklecow.cowchat.chat.Chat;
 import com.sparklecow.cowchat.common.BaseAuditing;
+import com.sparklecow.cowchat.message.Message;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +23,9 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "users")
 public class User extends BaseAuditing implements UserDetails {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private static final int LAST_ACTIVATE_INTERVAL = 5;
 
@@ -36,11 +43,17 @@ public class User extends BaseAuditing implements UserDetails {
 
     private LocalDateTime lastSeen;
 
-    @OneToMany
-    private List<Chat> chatsAsSender;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "participants")
+    private List<Chat> chats = new ArrayList<>();
 
-    @OneToMany
-    private List<Chat> chatsAsRecipient;
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender")
+    private List<Message> sentMessages = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "recipients")
+    private List<Message> receivedMessages = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -81,5 +94,4 @@ public class User extends BaseAuditing implements UserDetails {
     public String getPassword(){
         return password;
     }
-
 }

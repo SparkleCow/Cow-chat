@@ -6,7 +6,10 @@ import com.sparklecow.cowchat.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
@@ -17,7 +20,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "messages")
 @Builder
-public class Message extends BaseAuditing {
+public class Message extends BaseAuditing implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,6 +43,14 @@ public class Message extends BaseAuditing {
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
+
+    @ManyToMany
+    @JoinTable(
+            name = "message_recipients",
+            joinColumns = @JoinColumn(name = "message_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> recipients;
 
     private LocalDateTime timestamp;
 
