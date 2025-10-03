@@ -25,7 +25,7 @@ public class User extends BaseAuditing implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String username;
 
@@ -72,4 +72,15 @@ public class User extends BaseAuditing implements UserDetails {
     public boolean isUserOnline(){
         return lastSeen != null && !lastSeen.isBefore(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
     }
+
+    @Override
+    public String getUsername(){
+        return username;
+    }
+
+    @Override
+    public String getPassword(){
+        return password;
+    }
+
 }

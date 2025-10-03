@@ -31,4 +31,6 @@ public class Chat extends BaseAuditing {
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages;
+
+    private String name;
 }
