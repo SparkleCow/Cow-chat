@@ -14,7 +14,7 @@
   function subscribeToChat(chatId) {
     if (!subscriptions[chatId]) {
       const sub = stompClient.subscribe(`/topic/chat.${chatId}`, function (msg) {
-        showMessage(JSON.parse(msg), chatId);
+        showMessage(JSON.parse(msg.body), chatId);
       });
       subscriptions[chatId] = sub;
       console.log("Suscrito al chat:", chatId);
@@ -22,6 +22,11 @@
   }
 
   function sendMessage(chatId) {
+
+    if(!subscriptions[chatId]) {
+      subscribeToChat(chatId);
+    }
+
     const input = document.getElementById("messageInput");
     const message = {
       chatId: chatId,

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 public class ChatWebSocketController {
 
     private final MessageService messageService;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @MessageMapping("/chat.send")
     @SendTo("/topic/messages")
@@ -22,8 +25,9 @@ public class ChatWebSocketController {
     }
 
     @MessageMapping("/chat.{chatId}.send")
-    @SendTo("/topic/chat.{chatId}")
-    public Message sendToChat(@DestinationVariable String chatId, MessageRequest messageRequest) {
-        return messageService.sendMessageWithoutUserOrChat(messageRequest.content());
+    public void sendToChat(@DestinationVariable String chatId, MessageRequest messageRequest) {
+        System.out.println("Entramos y recibimos: " + messageRequest.toString());
+        Message msg = messageService.sendMessageWithoutUserOrChat(messageRequest.content());
+        messagingTemplate.convertAndSend("/topic/chat." + chatId, msg);
     }
 }

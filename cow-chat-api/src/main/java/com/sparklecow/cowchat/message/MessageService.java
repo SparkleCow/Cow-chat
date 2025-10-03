@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +36,12 @@ public class MessageService {
 
     public Message sendMessageWithoutUserOrChat(String content) {
         Message message = new Message();
+        message.setMessageType(MessageType.TEXT);
+        message.setId(UUID.randomUUID().toString());
+        message.setChat(null);
+        message.setSender(null);
         message.setContent(content);
         message.setTimestamp(LocalDateTime.now());
-        return messageRepository.save(message);
+        return message;
     }
 }

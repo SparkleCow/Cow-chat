@@ -25,7 +25,7 @@ public class WebSocketsConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Client connects here: ws://localhost:8080/chat
         registry.addEndpoint("/chat")
-                .setAllowedOriginPatterns("*")   // allow all origins (or restrict for prod)
-                .withSockJS();                  // fallback if WS not available
+                .setAllowedOriginPatterns("*")
+                .withSockJS();              // fallback if WS not available
     }
 }
