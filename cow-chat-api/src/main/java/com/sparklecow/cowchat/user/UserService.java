@@ -17,6 +17,6 @@ public class UserService {
     }
 
     public List<UserResponseDto> findAllUsers(){
-        return userRepository.findAll().stream().map(x -> userMapper.toUserResponseDto(x));
+        return userRepository.findAll().stream().map(userMapper::toUserResponseDto).toList();
     }
 }
