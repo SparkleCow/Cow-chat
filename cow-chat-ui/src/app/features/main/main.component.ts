@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CardComponent } from "../../shared/card/card.component";
 
 @Component({
   selector: 'app-main',
-  imports: [],
+  imports: [CardComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })

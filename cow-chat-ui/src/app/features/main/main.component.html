@@ -6,15 +6,36 @@
         <button (click)="redirectAtRegister()"><b>Registrarse</b></button>
       </div>
     </header>
+
     <main class="main-content">
-      <aside>
-        <img src="https://substackcdn.com/image/fetch/$s_!SQCD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F8ba7e777-f4c7-4973-9f4b-989023b322f3_600x315.png" alt="">
-      </aside>
-      <article>Contenido principal
-        <div>
-          <h2>Bienvenidos a Cow Chat</h2>
-        </div>
-      </article>
+          <!-- <img src="https://substackcdn.com/image/fetch/$s_!SQCD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F8ba7e777-f4c7-4973-9f4b-989023b322f3_600x315.png" alt=""> -->
+
+      <h3>Chat en tiempo real con WebSockets</h3>
+      <h1>Conecta al instante con</h1>
+      <h1>CowChat</h1>
+      <p>
+        La plataforma de mensajería moderna que utiliza WebSockets para<br/>
+        conversaciones instantáneas y fluidas. Rápido, seguro y siempre conectado.
+      </p>
+      <button>Comenzar gratis</button>
+
+      <section class="cards">
+        <app-card
+          [title]="'Mi primer card'"
+          [content]="'Este es el contenido del card.'"
+          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
+        </app-card>
+        <app-card
+          [title]="'Mi segunda card'"
+          [content]="'Este es el contenido del card.'"
+          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
+        </app-card><app-card
+          [title]="'Mi tercera card'"
+          [content]="'Este es el contenido del card.'"
+          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
+        </app-card>
+      </section>
     </main>
+
     <footer>Pie de página super bonito</footer>
   </div>
