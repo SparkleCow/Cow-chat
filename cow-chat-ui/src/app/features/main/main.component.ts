@@ -13,6 +13,7 @@ export class MainComponent {
   constructor(private router:Router){}
 
   redirectAtLogin(){
+    this.router.navigate(["/login"]);
   }
 
   redirectAtRegister(){
