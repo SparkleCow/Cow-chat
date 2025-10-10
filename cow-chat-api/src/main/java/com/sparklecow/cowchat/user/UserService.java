@@ -1,6 +1,7 @@
 package com.sparklecow.cowchat.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,5 +19,10 @@ public class UserService {
 
     public List<UserResponseDto> findAllUsers(){
         return userRepository.findAll().stream().map(userMapper::toUserResponseDto).toList();
+    }
+
+    public List<UserResponseDto> findAllUsersExceptSelf(Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        return userRepository.findAllExcept(user.getId()).stream().map(userMapper::toUserResponseDto).toList();
     }
 }

@@ -6,5 +6,8 @@ import { LoginComponent } from './features/auth/login/login.component';
 export const routes: Routes = [
   { path: "", component: MainComponent },
   { path: "register", component: RegisterComponent },
-  { path: "login", component: LoginComponent}
+  { path: "login", component: LoginComponent},
+  { path: "chat", loadChildren: () => import('./features/chat/chat.routes')
+      .then(m => m.chatRoutes)
+  }
 ];

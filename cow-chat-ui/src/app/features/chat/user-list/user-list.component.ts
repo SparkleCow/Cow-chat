@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { UserResponseDto } from '../../../models/user-response-dto';
 
 @Component({
   selector: 'app-user-list',
@@ -8,4 +9,5 @@ import { Component } from '@angular/core';
 })
 export class UserListComponent {
 
+    @Input() users: UserResponseDto[] = [];
 }

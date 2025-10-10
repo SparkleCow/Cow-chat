@@ -22,6 +22,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@NamedQuery(
+        name = "User.findAllExcept",
+        query = "SELECT u FROM User u WHERE u.id <> :userId ORDER BY u.lastSeen DESC"
+)
 public class User extends BaseAuditing implements UserDetails {
 
     @Serial
