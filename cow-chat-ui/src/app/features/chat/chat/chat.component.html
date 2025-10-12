@@ -1,5 +1,29 @@
-<app-user-list
- [users]="users">
+<div class="chat-page">
+  <app-user-list
+    [users]="users"
+    (userId)="handleUserId($event)"
+  >
 
-</app-user-list>
-<p>Hola</p>
+  </app-user-list>
+
+  @if (!chat) {
+    <div class="chat-info">
+      <h1>¡Bienvenido a CowChat!</h1>
+      <p>Selecciona una conversación de la lista para comenzar a chatear</p>
+    </div>
+  }@else{
+    <div class="chat-container">
+      <header class="chat-header">
+        <div class="chat-img">
+          <img src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGluZyVDMyVCQ2lub3xlbnwwfHwwfHx8MA%3D%3D" alt="">
+        </div>
+        <h1>{{chat.name}}</h1>
+      </header>
+      <div class="messages">
+        <section class="messages-container reciever"></section>
+        <section class="messages-container sender"></section>
+      </div>
+      <input type="text" placeholder="Escribe un mensaje">
+    </div>
+  }
+</div>

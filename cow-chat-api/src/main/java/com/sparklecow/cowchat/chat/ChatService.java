@@ -14,12 +14,13 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final ChatMapper chatMapper;
 
-    public Chat existOrcreateChat(String senderId, String recipientId){
+    public ChatResponseDto existOrcreateChat(String senderId, String recipientId){
         Optional<Chat> existingChat = chatRepository.findChatBetweenUsers(senderId, recipientId);
 
         if (existingChat.isPresent()) {
-            return existingChat.get();
+            return chatMapper.toDto(existingChat.get());
         }
 
         User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException(""));
@@ -27,6 +28,21 @@ public class ChatService {
 
         List<User> users = List.of(sender, recipient);
 
-        return chatRepository.save(Chat.builder().name("").participants(users).build());
+        return chatMapper.toDto(chatRepository.save(Chat.builder().name("Chat").participants(users).build()));
+    }
+
+    public ChatResponseDto existOrcreatePrivateChat(String senderId, String recipientId){
+        Optional<Chat> existingChat = chatRepository.findPrivateChatBetweenUsers(senderId, recipientId);
+
+        if (existingChat.isPresent()) {
+            return chatMapper.toDto(existingChat.get());
+        }
+
+        User sender = userRepository.findById(senderId).orElseThrow(() -> new RuntimeException(""));
+        User recipient = userRepository.findById(recipientId).orElseThrow(() -> new RuntimeException(""));
+
+        List<User> users = List.of(sender, recipient);
+
+        return chatMapper.toDto(chatRepository.save(Chat.builder().name("Chat").participants(users).build()));
     }
 }

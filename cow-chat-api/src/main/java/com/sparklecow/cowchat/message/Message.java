@@ -1,5 +1,6 @@
 package com.sparklecow.cowchat.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparklecow.cowchat.chat.Chat;
 import com.sparklecow.cowchat.common.BaseAuditing;
 import com.sparklecow.cowchat.user.User;
@@ -36,6 +37,7 @@ public class Message extends BaseAuditing implements Serializable {
 
     private String filePath;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
@@ -53,7 +55,6 @@ public class Message extends BaseAuditing implements Serializable {
     private List<User> recipients;
 
     private LocalDateTime timestamp;
-
     private boolean delivered;
 
     private boolean read;

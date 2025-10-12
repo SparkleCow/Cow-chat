@@ -1,21 +1,28 @@
 <div class="users-container">
   <header>
-    CowChat
-  </header>
-  @for (user of users; track user.id) {
-    <div class="user-card">
-      <div class="user-img">
-        <img src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGluZyVDMyVCQ2lub3xlbnwwfHwwfHx8MA%3D%3D" alt="">
-      </div>
-      <section class="user-info">
-        <h3>{{user.username}}</h3>
-      </section>
-      <section class="user-info">
-        <p>10:30</p>
-        <p>{{user.isOnline}}</p>
-      </section>
+    <div class="header-container">
+      <h1>CowChat</h1>
+      <form action="">
+        <input type="text">
+      </form>
     </div>
-  } @empty {
-    <p>No hay usuarios registrados.</p>
-  }
+  </header>
+  <div class="user-card-container">
+    @for (user of users; track user.id) {
+      <div class="user-card" (click)="openChat(user)">
+        <div class="user-img">
+          <img src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGluZyVDMyVCQ2lub3xlbnwwfHwwfHx8MA%3D%3D" alt="">
+        </div>
+        <section class="user-info">
+          <h3>{{user.username}}</h3>
+        </section>
+        <section class="user-info">
+          <p>10:30</p>
+          <p>{{user.isOnline}}</p>
+        </section>
+      </div>
+    } @empty {
+      <p>No hay usuarios registrados.</p>
+    }
+  </div>
 </div>

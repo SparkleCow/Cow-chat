@@ -1,6 +1,6 @@
 package com.sparklecow.cowchat.message;
 
-public record MessageRequest(
+public record MessageRequestDto(
         String chatId,
         String senderId,
         String content

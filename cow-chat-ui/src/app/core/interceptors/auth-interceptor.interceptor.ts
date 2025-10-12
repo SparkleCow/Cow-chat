@@ -8,13 +8,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const token = localStorage.getItem('auth_token');
 
-  const clonedReq = token
+  const publicUrls = [
+    '/auth/login',
+    '/auth/register'
+  ];
+
+  const isPublic = publicUrls.some(url => req.url.includes(url));
+
+  const authReq = !isPublic && token
     ? req.clone({
         setHeaders: { Authorization: `Bearer ${token}` }
       })
     : req;
 
-  return next(clonedReq).pipe(
+  return next(authReq).pipe(
     catchError(err => {
       if (err.status === 401) {
         console.warn('Token inválido o expirado');

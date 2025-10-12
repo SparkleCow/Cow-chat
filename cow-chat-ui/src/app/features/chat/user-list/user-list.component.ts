@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserResponseDto } from '../../../models/user-response-dto';
 
 @Component({
@@ -10,4 +10,11 @@ import { UserResponseDto } from '../../../models/user-response-dto';
 export class UserListComponent {
 
     @Input() users: UserResponseDto[] = [];
+    @Output() userId = new EventEmitter<string>();
+
+    openChat(user: UserResponseDto): void {
+      this.userId.emit(user.id);
+    }
+
+
 }

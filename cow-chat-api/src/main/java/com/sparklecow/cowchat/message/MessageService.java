@@ -15,23 +15,24 @@ import java.util.UUID;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
 
-    public Message sendMessage(MessageRequest messageRequest) {
+    public MessageResponseDto sendMessage(MessageRequestDto messageRequestDto) {
 
-        Chat chat = chatRepository.findById(messageRequest.chatId())
+        Chat chat = chatRepository.findById(messageRequestDto.chatId())
                 .orElseThrow(() -> new RuntimeException("Chat not found"));
-        User sender = userRepository.findById(messageRequest.senderId())
+        User sender = userRepository.findById(messageRequestDto.senderId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Message message = new Message();
         message.setChat(chat);
         message.setSender(sender);
-        message.setContent(messageRequest.content());
+        message.setContent(messageRequestDto.content());
         message.setTimestamp(LocalDateTime.now());
 
-        return messageRepository.save(message);
+        return messageMapper.toDto(messageRepository.save(message));
     }
 
     public Message sendMessageWithoutUserOrChat(String content) {
