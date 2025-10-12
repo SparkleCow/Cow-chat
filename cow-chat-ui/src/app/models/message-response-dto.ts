@@ -1,8 +1,10 @@
+import { MessageType } from "./message-request-dto";
 export interface MessageResponseDto {
   id: string;
   content: string;
-  messageType: string;
-  filePath: string | null;
+  messageType: MessageType;
+  filePath?: string | null;
+  chatId: string;
   senderId: string;
   recipientIds: string[];
   timestamp: string;

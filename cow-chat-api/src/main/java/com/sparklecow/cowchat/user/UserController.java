@@ -23,13 +23,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllUsersExceptSelf(authentication));
     }
 
-    /*@GetMapping("/self")
+    @GetMapping("/self")
     public ResponseEntity<UserResponseDto> findLoggedUsed(Authentication authentication){
-    }*/
+        return ResponseEntity.ok(userService.findUserLogged(authentication));
+    }
 
     /*
     * TODO
-    *  return the logged user
     *  update user information (self)
     *  delete user account (self)
     */

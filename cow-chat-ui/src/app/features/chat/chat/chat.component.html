@@ -3,15 +3,14 @@
     [users]="users"
     (userId)="handleUserId($event)"
   >
+</app-user-list>
 
-  </app-user-list>
+  <div *ngIf="!chat; else chatSelected" class="chat-info">
+    <h1>¡Bienvenido a CowChat!</h1>
+    <p>Selecciona una conversación de la lista para comenzar a chatear</p>
+  </div>
 
-  @if (!chat) {
-    <div class="chat-info">
-      <h1>¡Bienvenido a CowChat!</h1>
-      <p>Selecciona una conversación de la lista para comenzar a chatear</p>
-    </div>
-  }@else{
+  <ng-template #chatSelected>
     <div class="chat-container">
       <header class="chat-header">
         <div class="chat-img">
@@ -19,11 +18,28 @@
         </div>
         <h1>{{chat.name}}</h1>
       </header>
+
       <div class="messages">
-        <section class="messages-container reciever"></section>
-        <section class="messages-container sender"></section>
+        <section class="messages-container reciever">
+          <ng-container *ngFor="let msg of chat.messages">
+            <div *ngIf="msg.senderId !== currentUserId">
+              {{ msg.content }}
+            </div>
+          </ng-container>
+        </section>
+
+        <section class="messages-container sender">
+          <ng-container *ngFor="let msg of chat.messages">
+            <div *ngIf="msg.senderId === currentUserId">
+              {{ msg.content }}
+            </div>
+          </ng-container>
+        </section>
       </div>
-      <input type="text" placeholder="Escribe un mensaje">
+
+      <input type="text" placeholder="Escribe un mensaje"
+             [(ngModel)]="newMessage"
+             (keyup.enter)="sendMessage()">
     </div>
-  }
+  </ng-template>
 </div>

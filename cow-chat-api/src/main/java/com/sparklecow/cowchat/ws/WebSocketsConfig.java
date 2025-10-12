@@ -23,7 +23,7 @@ public class WebSocketsConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Client connects here: ws://localhost:8080/chat
+        // Client connects here: http://localhost:8080/ws
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();           // fallback if WS not available

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,9 +31,15 @@ public class MessageService {
         message.setChat(chat);
         message.setSender(sender);
         message.setContent(messageRequestDto.content());
+        message.setMessageType(messageRequestDto.messageType());
+        message.setFilePath(messageRequestDto.filePath());
         message.setTimestamp(LocalDateTime.now());
 
-        return messageMapper.toDto(messageRepository.save(message));
+        List<User> recipients = userRepository.findAllById(messageRequestDto.recipientIds());
+        message.setRecipients(recipients);
+
+        Message saved = messageRepository.save(message);
+        return messageMapper.toDto(saved);
     }
 
     public Message sendMessageWithoutUserOrChat(String content) {

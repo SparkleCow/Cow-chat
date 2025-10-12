@@ -8,6 +8,7 @@ public record MessageResponseDto(
         String content,
         MessageType messageType,
         String filePath,
+        String chatId,
         String senderId,
         List<String> recipientIds,
         LocalDateTime timestamp,

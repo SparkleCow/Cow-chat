@@ -9,15 +9,14 @@ import java.util.stream.Collectors;
 public class MessageMapper {
 
     public MessageResponseDto toDto(Message message) {
-        if (message == null) {
-            return null;
-        }
+        if (message == null) return null;
 
         return new MessageResponseDto(
                 message.getId(),
                 message.getContent(),
                 message.getMessageType(),
                 message.getFilePath(),
+                message.getChat().getId(),
                 message.getSender() != null ? message.getSender().getId() : null,
                 message.getRecipients() != null
                         ? message.getRecipients().stream()

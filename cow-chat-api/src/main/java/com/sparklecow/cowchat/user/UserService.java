@@ -13,6 +13,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    public UserResponseDto findUserLogged(Authentication authentication){
+        return userMapper.toUserResponseDto((User) authentication.getPrincipal());
+    }
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(""));
     }
