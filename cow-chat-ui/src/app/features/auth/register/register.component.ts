@@ -20,19 +20,36 @@ export class RegisterComponent implements OnInit{
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      username: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      username: ['', [Validators.required, Validators.maxLength(15)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(40)]],
+      password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]]
     });
   }
 
   onSubmit(): void {
     if (this.form.invalid) {
+      alert("Ingresa toda los datos requeridos")
       this.form.markAllAsTouched();
       return;
     }
 
-    this.authService.$createAccount(this.form.value).subscribe({
+    const userRequestDto = {
+      username: this.form.get('username')?.value,
+      email: this.form.get('email')?.value,
+      password: this.form.get('password')?.value,
+      confirmPassword: this.form.get('confirmPassword')?.value
+    };
+
+    if(userRequestDto.password != userRequestDto.confirmPassword){
+      alert("Las contraseñas no coinciden")
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    delete userRequestDto.confirmPassword;
+
+    this.authService.$createAccount(userRequestDto).subscribe({
       next: () => {
         alert("Cuenta creada con éxito")
         this.redirectAtLogin();
@@ -44,6 +61,6 @@ export class RegisterComponent implements OnInit{
   }
 
   redirectAtLogin(){
-    this.router.navigate(["/"]);
+    this.router.navigate(["/login"]);
   }
 }

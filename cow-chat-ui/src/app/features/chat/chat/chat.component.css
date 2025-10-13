@@ -84,7 +84,7 @@ app-user-list {
 
 .message.sent {
   align-self: flex-end;
-  background-color: #af66f3;
+  background: linear-gradient(to right, #7c3bed, #af66f3);
   color: white;
 }
 

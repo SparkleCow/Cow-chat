@@ -41,6 +41,7 @@ public class User extends BaseAuditing implements UserDetails {
 
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     private String imagePath;
