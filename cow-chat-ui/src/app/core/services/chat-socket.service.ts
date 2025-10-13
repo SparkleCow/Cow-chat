@@ -14,8 +14,8 @@ export class ChatSocketService {
   private connected = false;
 
   connect(onConnected?: () => void): void {
-    if (this.connected) {
-      console.log("Already connected to WebSocket");
+    if (this.stompClient?.connected) {
+      console.log("Already connected, skipping new connection");
       onConnected?.();
       return;
     }
@@ -72,10 +72,12 @@ export class ChatSocketService {
     const topic = `/topic/chat/${chatId}`;
     console.log(`🧠 Subscrito a ${topic}`);
 
-    this.stompClient.subscribe(topic, (msg: IMessage) => {
+    const subscription = this.stompClient.subscribe(topic, (msg: IMessage) => {
       const message = JSON.parse(msg.body) as MessageResponseDto;
       console.log("📨 Mensaje recibido en chat:", message);
       onMessage(message);
     });
+
+    return subscription;
   }
 }

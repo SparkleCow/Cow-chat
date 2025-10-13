@@ -54,6 +54,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.currentChatSubscription) {
       this.currentChatSubscription.unsubscribe();
+      this.currentChatSubscription = null;
     }
     this.userSub?.unsubscribe();
     this.chatSocketService.disconnect();
@@ -67,16 +68,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.chat = chat;
         console.log("💬 Chat cargado:", chat);
 
-        if (this.currentChatSubscription) {
-          this.currentChatSubscription.unsubscribe();
-        }
+       if (this.currentChatSubscription) {
+        this.currentChatSubscription.unsubscribe();
+      }
 
-        this.currentChatSubscription = this.chatSocketService.subscribeToChat(chat.id, (message) => {
-          console.log("📨 Mensaje recibido en chat actual:", message);
-          if (this.chat.id === message.chatId) {
-            this.chat.messages.push(message);
-          }
-        });
+      this.currentChatSubscription = this.chatSocketService.subscribeToChat(chat.id, (message) => {
+        console.log("📨 Mensaje recibido en chat actual:", message);
+        if (this.chat.id === message.chatId) {
+          this.chat.messages.push(message);
+        }
+      });
       },
       error: (err) => {
         console.error("Error al obtener chat:", err);
@@ -96,7 +97,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       recipientIds: [this.receiverUserId]
     };
 
-    console.log("📤 Enviando mensaje:", dto);
     this.chatSocketService.sendMessage(this.chat.id, dto);
     this.newMessage = '';
   }

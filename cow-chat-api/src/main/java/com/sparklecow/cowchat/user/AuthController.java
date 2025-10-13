@@ -1,5 +1,6 @@
 package com.sparklecow.cowchat.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto authRequestDto){
+    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody @Valid AuthRequestDto authRequestDto){
         return ResponseEntity.ok(authService.login(authRequestDto));
     }
 }

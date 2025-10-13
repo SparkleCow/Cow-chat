@@ -1,9 +1,8 @@
 <div class="chat-page">
   <app-user-list
     [users]="users"
-    (userId)="handleUserId($event)"
-  >
-</app-user-list>
+    (userId)="handleUserId($event)">
+  </app-user-list>
 
   <div *ngIf="!chat; else chatSelected" class="chat-info">
     <h1>¡Bienvenido a CowChat!</h1>
@@ -14,32 +13,33 @@
     <div class="chat-container">
       <header class="chat-header">
         <div class="chat-img">
-          <img src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGluZyVDMyVCQ2lub3xlbnwwfHwwfHx8MA%3D%3D" alt="">
+          <img
+            src="https://images.unsplash.com/photo-1462888210965-cdf193fb74de?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0"
+            alt="contact">
         </div>
-        <h1>{{chat.name}}</h1>
+        <h1>{{ chat.name }}</h1>
       </header>
 
       <div class="messages">
-        <section class="messages-container reciever">
-          <ng-container *ngFor="let msg of chat.messages">
-            <div *ngIf="msg.senderId !== currentUserId">
-              {{ msg.content }}
-            </div>
-          </ng-container>
-        </section>
-
-        <section class="messages-container sender">
-          <ng-container *ngFor="let msg of chat.messages">
-            <div *ngIf="msg.senderId === currentUserId">
-              {{ msg.content }}
-            </div>
-          </ng-container>
-        </section>
+        <ng-container *ngFor="let msg of chat.messages">
+          <div
+            [ngClass]="{
+              'message': true,
+              'sent': msg.senderId === currentUserId,
+              'received': msg.senderId !== currentUserId
+            }">
+            <p>{{ msg.content }}</p>
+          </div>
+        </ng-container>
       </div>
 
-      <input type="text" placeholder="Escribe un mensaje"
-             [(ngModel)]="newMessage"
-             (keyup.enter)="sendMessage()">
+      <div class="input-container">
+        <input
+          type="text"
+          placeholder="Escribe un mensaje..."
+          [(ngModel)]="newMessage"
+          (keyup.enter)="sendMessage()">
+      </div>
     </div>
   </ng-template>
 </div>
