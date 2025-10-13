@@ -1,41 +1,54 @@
-  <div>
-    <header class="main-header">
-      <h1>CowChat</h1>
-      <div class="main-header-buttons">
-        <button (click)="redirectAtLogin()"><b>Iniciar sesión</b></button>
-        <button (click)="redirectAtRegister()"><b>Registrarse</b></button>
+<div>
+  <header class="main-header">
+    <h1>CowChat</h1>
+    <div class="main-header-buttons">
+      <button (click)="redirectAtLogin()"><b>Iniciar sesión</b></button>
+      <button (click)="redirectAtRegister()"><b>Registrarse</b></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero-section">
+      <div class="hero-text">
+        <h1>Conecta al instante con</h1>
+        <h1>CowChat</h1>
+        <p>
+          La plataforma de mensajería moderna que utiliza WebSockets para<br />
+          conversaciones instantáneas y fluidas. Rápido, seguro y siempre conectado.
+        </p>
+        <button (click)="redirectAtLogin()">Comenzar gratis</button>
       </div>
-    </header>
 
-    <main class="main-content">
-          <!-- <img src="https://substackcdn.com/image/fetch/$s_!SQCD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F8ba7e777-f4c7-4973-9f4b-989023b322f3_600x315.png" alt=""> -->
+      <div class="hero-image">
+        <img
+          src="https://substackcdn.com/image/fetch/$s_!SQCD!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F8ba7e777-f4c7-4973-9f4b-989023b322f3_600x315.png"
+          alt="CowChat ilustración"
+        />
+      </div>
+    </section>
 
-      <h3>Chat en tiempo real con WebSockets</h3>
-      <h1>Conecta al instante con</h1>
-      <h1>CowChat</h1>
-      <p>
-        La plataforma de mensajería moderna que utiliza WebSockets para<br/>
-        conversaciones instantáneas y fluidas. Rápido, seguro y siempre conectado.
-      </p>
-      <button>Comenzar gratis</button>
+    <section class="cards">
+      <app-card
+        [title]="'Velocidad'"
+        [content]="'Mensajes instantáneos con tecnología WebSocket'"
+        [image]="'https://cdn-icons-png.flaticon.com/512/1041/1041916.png'">
+      </app-card>
 
-      <section class="cards">
-        <app-card
-          [title]="'Mi primer card'"
-          [content]="'Este es el contenido del card.'"
-          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
-        </app-card>
-        <app-card
-          [title]="'Mi segunda card'"
-          [content]="'Este es el contenido del card.'"
-          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
-        </app-card><app-card
-          [title]="'Mi tercera card'"
-          [content]="'Este es el contenido del card.'"
-          [image]="'https://cdn-icons-png.flaticon.com/512/1383/1383269.png'">
-        </app-card>
-      </section>
-    </main>
+      <app-card
+        [title]="'Seguridad'"
+        [content]="'Comunicación cifrada y segura en tiempo real'"
+        [image]="'https://cdn-icons-png.flaticon.com/512/2910/2910768.png'">
+      </app-card>
 
-    <footer>Pie de página super bonito</footer>
-  </div>
+      <app-card
+        [title]="'Diseño Moderno'"
+        [content]="'Interfaz minimalista y adaptable a cualquier dispositivo'"
+        [image]="'https://cdn-icons-png.flaticon.com/512/3652/3652191.png'">
+      </app-card>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 CowChat — Plataforma creada con ❤️ para conectar personas.</p>
+  </footer>
+</div>

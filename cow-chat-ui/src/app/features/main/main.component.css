@@ -1,32 +1,51 @@
-/*Header styles*/
+/* ---------- Global styles ---------- */
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-.main-header{
+body {
+  background-color: #fff;
+  color: #222;
+  overflow-x: hidden; /* ✅ evita scroll lateral */
+}
+
+/* ---------- Header ---------- */
+.main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 50px 0px 50px;
-  max-width: 100vw;
+  padding: 0px 50px;
   height: 10vh;
   border-bottom: 1px solid rgb(225, 225, 225);
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.main-header h1{
+.main-header h1 {
+  font-size: 28px;
   background: linear-gradient(to right, #7c3bed, #af66f3);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.main-header-buttons{
+.main-header-buttons {
   display: flex;
   gap: 20px;
 }
 
-.main-header-buttons button{
+.main-header-buttons button {
   width: 120px;
   height: 40px;
   border-radius: 10px;
   border: 1px solid rgb(210, 210, 210);
   cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .main-header-buttons button:first-child {
@@ -34,63 +53,175 @@
   color: black;
 }
 
-.main-header-buttons button:last-child{
+.main-header-buttons button:last-child {
   color: white;
-  background-color: #7c3bed;
   background: linear-gradient(to right, #7c3bed, #af66f3);
+  border: none;
 }
 
-/*Main styles*/
+.main-header-buttons button:hover {
+  transform: scale(1.05);
+}
 
-.main-content{
+/* ---------- Hero Section ---------- */
+.hero-section {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  padding: 60px 80px;
+  gap: 60px;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
-.main-content h3{
-  border-radius: 30px;
-  padding: 10px;
-  border: 3px solid #7c3bed;
+.hero-text {
+  flex: 1;
+  text-align: left;
+}
+
+.hero-text h1 {
+  font-size: 64px;
+  line-height: 1.1;
+}
+
+.hero-text h1:nth-child(2) {
   background: linear-gradient(to right, #7c3bed, #af66f3);
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 70px 0px 70px 0px;
 }
 
-.main-content h1{
-  font-size: 60px;
-}
-
-.main-content p{
-  margin: 30px 0px 30px 0px;
+.hero-text p {
   font-size: 20px;
+  color: #555;
+  margin: 30px 0;
+  line-height: 1.5;
 }
 
-.main-content button{
-  width: 200px;
-  height: 45px;
+.hero-text button {
+  width: 220px;
+  height: 50px;
   border-radius: 10px;
-  border: 1px solid rgb(210, 210, 210);
+  border: none;
   color: white;
-  background-color: #7c3bed;
   background: linear-gradient(to right, #7c3bed, #af66f3);
   font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.main-content h1:nth-child(3){
-  background: linear-gradient(to right, #7c3bed, #af66f3);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.hero-text button:hover {
+  transform: scale(1.07);
+  box-shadow: 0 4px 12px rgba(124, 59, 237, 0.4);
 }
 
-/*Section - cards styles*/
-.cards{
+.hero-image {
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  gap: 30px;
-  padding: 50px 0px 50px 0px;
+  justify-content: center;
+  align-items: center;
 }
 
+.hero-image img {
+  width: 500px;
+  max-width: 100%;
+  transition: transform 0.4s ease;
+  border-radius: 15px;
+}
+
+.hero-image img:hover {
+  transform: scale(1.03);
+}
+
+/* ---------- Cards Section ---------- */
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: wrap; /* ✅ permite que se ajusten correctamente */
+  padding: 80px 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  text-align: center;
+  padding: 30px 10px;
+  background-color: #fafafa;
+  border-top: 1px solid #eee;
+  font-size: 15px;
+  color: #666;
+}
+
+/* ---------- Responsividad ---------- */
+@media (max-width: 992px) {
+  .hero-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+
+  .hero-text h1 {
+    font-size: 48px;
+  }
+
+  .cards {
+    gap: 20px;
+    padding: 60px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header {
+    flex-direction: column;
+    height: auto;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .hero-section {
+    flex-direction: column;
+    padding: 40px 10px;
+  }
+
+  .hero-image img {
+    width: 300px;
+  }
+
+  .hero-text h1 {
+    font-size: 36px;
+  }
+
+  .cards {
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 10px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .hero-text h1 {
+    font-size: 28px;
+  }
+
+  .hero-text p {
+    font-size: 16px;
+  }
+
+  .hero-text button {
+    width: 180px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  footer p {
+    font-size: 13px;
+  }
+}
