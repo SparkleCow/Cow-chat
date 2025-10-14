@@ -25,10 +25,6 @@ export class AuthService {
     return this.http.post<AuthResponseDto>(`${this.url}/auth/login`, authRequestDto);
   }
 
-  $findUserLogged(): Observable<UserResponseDto>{
-    return this.http.get<UserResponseDto>(`${this.url}/user/self`)
-  }
-
   saveToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }

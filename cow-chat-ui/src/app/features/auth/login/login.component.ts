@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { AuthResponseDto } from '../../../models/auth-response-dto';
 import { UserResponseDto } from '../../../models/user-response-dto';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -15,9 +16,9 @@ import { UserResponseDto } from '../../../models/user-response-dto';
 export class LoginComponent implements OnInit{
 
   form!: FormGroup;
-  user!: UserResponseDto;
 
   constructor(private authService: AuthService,
+              private userService: UserService,
               private fb: FormBuilder,
               private router:Router
   ){}
@@ -36,20 +37,13 @@ export class LoginComponent implements OnInit{
     }
 
      this.authService.$login(this.form.value).subscribe({
-      next: (response:AuthResponseDto) => {
+      next: (response: AuthResponseDto) => {
         this.authService.saveToken(response.jwt);
-        this.authService.$findUserLogged().subscribe({
-          next: (user:UserResponseDto)=> {
-            this.user = user;
-            this.authService.saveUserId(user.id);
-          }
-        });
-        alert("Logueado con éxito")
+        this.userService.findUserLogged();
+        alert("Logueado con éxito");
         this.redirectAtChat();
       },
-      error: (err) => {
-        console.error('Error al loguear cuenta:', err);
-      }
+      error: (err) => console.error('Error al loguear cuenta:', err)
     });
   }
 
