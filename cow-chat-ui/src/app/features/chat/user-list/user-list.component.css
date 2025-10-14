@@ -27,12 +27,6 @@ header h1 {
   letter-spacing: 2px;
 }
 
-header form{
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
-
 header input {
   border-radius: 15px;
   border: none;
@@ -118,4 +112,19 @@ header input {
   margin: 0;
   font-size: 0.75rem;
   color: #777;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.profile-img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }

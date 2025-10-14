@@ -1,7 +1,8 @@
 <div class="chat-page">
   <app-user-list
     [users]="users"
-    (userId)="handleUserId($event)">
+    (userId)="handleUserId($event)"
+    [loggedUser]="user">
   </app-user-list>
 
   <div *ngIf="!chat; else chatSelected" class="chat-info">

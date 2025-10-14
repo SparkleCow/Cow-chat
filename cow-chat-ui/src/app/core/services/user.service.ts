@@ -30,6 +30,14 @@ export class UserService {
     });
   }
 
+  uploadUserImage(formData: FormData): Observable<UserResponseDto> {
+    return this.http.post<UserResponseDto>(`${this.url}/user/upload-image`, formData);
+  }
+
+  updateUsername(newUsername: string): Observable<UserResponseDto> {
+    return this.http.put<UserResponseDto>(`${this.url}/user/update-username`, { username: newUsername });
+  }
+
   clearUser(): void {
     this.userSubject.next(null);
   }

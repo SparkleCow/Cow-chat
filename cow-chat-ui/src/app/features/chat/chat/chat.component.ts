@@ -10,7 +10,7 @@ import { MessageResponseDto } from '../../../models/message-response-dto';
 import { AuthService } from '../../../core/services/auth.service';
 import { MessageRequestDto, MessageType } from '../../../models/message-request-dto';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -27,9 +27,13 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   newMessage: string = '';
   currentUserId: string = '';
+  user!: UserResponseDto;
 
   private currentChatSubscription: any = null;
+
+  //This is the observable from all users. This will receive all active users
   private userSub?: Subscription;
+  private loggedUserSub?: Subscription;
 
   constructor(
     private userService: UserService,
@@ -49,6 +53,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       next: (users: UserResponseDto[]) => this.users = users,
       error: (err) => console.error('Error al cargar usuarios:', err)
     });
+
+    this.loggedUserSub = this.userService.user$.subscribe({
+      next: (user) => {
+        if (user) {
+          this.currentUserId = user.id;
+          this.user = user;
+        } else {
+          this.currentUserId = '';
+        }
+      }
+    });
+
+    this.userService.findUserLogged();
   }
 
   ngOnDestroy(): void {

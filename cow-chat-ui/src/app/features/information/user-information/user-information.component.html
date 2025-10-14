@@ -1,0 +1,25 @@
+<div class="settings-container">
+  <div class="profile-section">
+    <label class="image-wrapper" for="fileInput">
+      <img
+        [src]="previewUrl || 'https://st2.depositphotos.com/9447932/47520/v/450/depositphotos_475203180-stock-illustration-cow-vector-illustration-flat-style.jpg'"
+        alt="Imagen de perfil"
+      >
+      <div class="overlay">
+        <span>Cambiar</span>
+      </div>
+    </label>
+    <input id="fileInput" type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+    <button (click)="uploadImage()" [disabled]="!selectedFile || isLoading">
+      {{ isLoading ? 'Subiendo...' : 'Subir imagen' }}
+    </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="updateUsername()">
+    <label>Nombre de usuario</label>
+    <input type="text" formControlName="username">
+    <button type="submit" [disabled]="form.invalid || isLoading">
+      {{ isLoading ? 'Actualizando...' : 'Guardar cambios' }}
+    </button>
+  </form>
+</div>
