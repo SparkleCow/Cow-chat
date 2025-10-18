@@ -1,26 +1,33 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserResponseDto } from '../../../models/user-response-dto';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
-  imports: [],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent {
 
-    @Input() users: UserResponseDto[] = [];
-    @Input() loggedUser!: UserResponseDto;
-    @Output() userId = new EventEmitter<string>();
+  @Input() users: UserResponseDto[] = [];
+  @Input() loggedUser!: UserResponseDto;
+  @Output() userId = new EventEmitter<string>();
 
-    constructor(private router:Router){}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-    openChat(user: UserResponseDto): void {
-      this.userId.emit(user.id);
-    }
+  openChat(user: UserResponseDto): void {
+    this.userId.emit(user.id);
+    this.redirectAtChat();
+  }
 
-    redirectAtUserInformation(){
-      this.router.navigate(["/information"]);
-    }
+  redirectAtUserInformation(): void {
+    this.router.navigate(['information'], { relativeTo: this.route });
+  }
+
+  redirectAtChat(){
+    this.router.navigate(['page'], { relativeTo: this.route });
+  }
 }

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ChatResponseDto } from '../../models/chat-response-dto';
 
 @Injectable({
@@ -11,10 +11,19 @@ export class ChatService {
   // private url:string = "http://localhost:8080"
   private url:string = "http://192.168.1.2:8080"
 
+  private chatSubject = new BehaviorSubject<ChatResponseDto | null>(null);
+  public chat$: Observable<ChatResponseDto | null> = this.chatSubject.asObservable();
+
   constructor(private http:HttpClient){}
 
-  $findChat(receiverUserId: string): Observable<ChatResponseDto> {
+  findChat(receiverUserId: string): void {
     const userId = {id: receiverUserId}
-    return this.http.post<ChatResponseDto>(`${this.url}/chat`, userId);
+    this.http.post<ChatResponseDto>(`${this.url}/chat`, userId).subscribe({
+      next: (user) => this.chatSubject.next(user),
+      error: (err) => {
+          console.error('Error al obtener usuario logueado:', err);
+          this.chatSubject.next(null);
+        }
+    });
   }
 }
