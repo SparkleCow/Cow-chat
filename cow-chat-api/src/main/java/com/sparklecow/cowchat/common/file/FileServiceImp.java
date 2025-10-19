@@ -1,22 +1,63 @@
 package com.sparklecow.cowchat.common.file;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
 
+@Service
+@RequiredArgsConstructor
 public class FileServiceImp implements FileService{
 
     private final S3Client s3Client;
 
-    @Value("${aws.s3.bucket}")
+    @Override
+    public byte[] compress(byte[] data) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] decompress(byte[] compressedData) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] encrypt(byte[] data) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] decrypt(byte[] encryptedData) {
+        return new byte[0];
+    }
+
+    @Override
+    public String uploadToS3(byte[] data, String path, String filename) {
+        return "";
+    }
+
+    @Override
+    public byte[] downloadFromS3(String fileUrl) {
+        return new byte[0];
+    }
+
+    @Override
+    public String processAndUpload(MultipartFile file, String path) {
+        return "";
+    }
+
+    @Override
+    public byte[] downloadAndRestore(String fileUrl) {
+        return new byte[0];
+    }
+
+    /*@Value("${aws.s3.bucket}")
     private String bucketName;
 
     // AES encryption key (16 bytes = 128 bits). In production, store this securely!
     @Value("${file.encryption.secret}")
     private String secretKey;
-
-    public FileServiceImpl(S3Client s3Client) {
-        this.s3Client = s3Client;
-    }
 
     // --------------------------------------------------
     // Compression / Decompression
@@ -159,5 +200,5 @@ public class FileServiceImp implements FileService{
 
         // Step 3: Decompress
         return decompress(decrypted);
-    }
+    }*/
 }

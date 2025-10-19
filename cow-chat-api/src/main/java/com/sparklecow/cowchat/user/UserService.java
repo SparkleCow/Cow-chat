@@ -1,5 +1,6 @@
 package com.sparklecow.cowchat.user;
 
+import com.sparklecow.cowchat.common.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

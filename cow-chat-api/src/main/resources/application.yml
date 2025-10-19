@@ -21,8 +21,23 @@ spring:
       max-file-size: 10MB
       max-request-size: 50MB
 
+  destination:
+    folder: "src/main/resources/static/"
+
 application:
   security:
     jwt:
       secret_key: ${SECRET_KEY}
       expiration: 8640000
+
+aws:
+  s3:
+    key: ${AWS.KEY}
+    secret: ${AWS.SECRET}
+    region: us-east-2
+
+logging:
+  level:
+    software:
+      amazon:
+        awssdk: DEBUG
