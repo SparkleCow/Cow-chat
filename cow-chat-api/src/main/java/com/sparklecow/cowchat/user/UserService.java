@@ -4,7 +4,6 @@ import com.sparklecow.cowchat.common.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,8 +32,13 @@ public class UserService {
         return userRepository.findAllExcept(user.getId()).stream().map(userMapper::toUserResponseDto).toList();
     }
 
-    public String updateProfileImage(Authentication authentication, MultipartFile file) {
+    public String updateProfileImage(Authentication authentication, String imagePath) {
+        if(imagePath == null || imagePath.isEmpty()){
+            return "Profile imaged could not be updated";
+        }
         User user = (User) authentication.getPrincipal();
-        return "todo";
+        user.setImagePath(imagePath);
+        userRepository.save(user);
+        return "Profile imaged updated successfully";
     }
 }

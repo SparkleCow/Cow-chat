@@ -5,16 +5,23 @@ import com.sparklecow.cowchat.aws.config.AwsProperties;
 import com.sparklecow.cowchat.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,189 +33,111 @@ public class FileServiceImp implements FileService{
     @Value("spring.destionation.folder")
     private String destinationFolder;
 
+    public byte[] compressProfileImage(byte[] inputBytes) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(inputBytes);
+        BufferedImage image = ImageIO.read(bais);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
+
+        ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
+        writer.setOutput(ios);
+
+        ImageWriteParam param = writer.getDefaultWriteParam();
+        if (param.canWriteCompressed()) {
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(0.5f); // 0.0 = max compress, 1.0 = better quality
+        }
+
+        writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
+        writer.dispose();
+
+        return baos.toByteArray();
+    }
+
     @Override
-    public byte[] compress(byte[] data) {
-        return new byte[0];
+    public byte[] compressData(byte[] data) {
+        if (data == null || data.length == 0) return data;
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             GZIPOutputStream gzip = new GZIPOutputStream(baos)) {
+
+            gzip.write(data);
+            gzip.close();
+            return baos.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error compressing data", e);
+        }
     }
 
     @Override
     public byte[] decompress(byte[] compressedData) {
-        return new byte[0];
+        if (compressedData == null || compressedData.length == 0) return compressedData;
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(compressedData);
+             GZIPInputStream gzip = new GZIPInputStream(bais);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = gzip.read(buffer)) > 0) {
+                baos.write(buffer);
+            }
+            return baos.toByteArray();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error decompressing data", e);
+        }
     }
 
     @Override
-    public String uploadToS3(MultipartFile data, String key, User user) throws IOException {
+    public String uploadDataToS3(MultipartFile data, String key, User user) throws IOException {
         Path path = Paths.get(destinationFolder);
-        if(!Files.exists(path)){
+        if (!Files.exists(path)) {
             Files.createDirectories(path);
         }
 
-        Path filePath = path.resolve(Objects.requireNonNull(data.getOriginalFilename()));
-        Path finalPath = Files.write(filePath, data.getBytes());
+        byte[] compressedBytes = compressData(data.getBytes());
 
-        key = user.getUsername()+"/"+key;
+        Path filePath = path.resolve(Objects.requireNonNull(data.getOriginalFilename()) + ".gz");
+        Path finalPath = Files.write(filePath, compressedBytes);
 
-        if(s3Service.uploadFile(key, finalPath)){
+        key = user.getUsername() + "/" + key + ".gz";
+
+        if (s3Service.uploadFile(key, finalPath)) {
             Files.delete(filePath);
-            return "File uploaded successfully";
+            return "File uploaded successfully (compressed)";
         }
 
         return "File could not be uploaded";
     }
 
     @Override
+    public String uploadProfileImageToS3(MultipartFile data, String key, User user) throws IOException {
+
+        Path path = Paths.get(destinationFolder);
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+
+        byte[] compressedBytes = compressProfileImage(data.getBytes());
+
+        Path filePath = path.resolve(Objects.requireNonNull(data.getOriginalFilename()));
+        Path finalPath = Files.write(filePath, compressedBytes);
+
+        key = user.getUsername() + "/" + key;
+
+        if (Boolean.TRUE.equals(s3Service.uploadFile(key, finalPath))) {
+            Files.delete(filePath);
+            return key;
+        }
+
+        return null;
+    }
+
+    @Override
     public byte[] downloadFromS3(String fileUrl) {
         return new byte[0];
     }
-
-
-    /*@Value("${aws.s3.bucket}")
-    private String bucketName;
-
-    // AES encryption key (16 bytes = 128 bits). In production, store this securely!
-    @Value("${file.encryption.secret}")
-    private String secretKey;
-
-    // --------------------------------------------------
-    // Compression / Decompression
-    // --------------------------------------------------
-
-    @Override
-    public byte[] compress(byte[] data) {
-        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-             GZIPOutputStream gzipStream = new GZIPOutputStream(byteStream)) {
-            gzipStream.write(data);
-            gzipStream.finish();
-            return byteStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error compressing file", e);
-        }
-    }
-
-    @Override
-    public byte[] decompress(byte[] compressedData) {
-        try (ByteArrayInputStream byteStream = new ByteArrayInputStream(compressedData);
-             GZIPInputStream gzipStream = new GZIPInputStream(byteStream);
-             ByteArrayOutputStream outStream = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = gzipStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, len);
-            }
-            return outStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error decompressing file", e);
-        }
-    }
-
-    // --------------------------------------------------
-    // Encryption / Decryption (AES)
-    // --------------------------------------------------
-
-    private Key getAesKey() {
-        // Make sure key is 16 bytes long (AES-128)
-        byte[] keyBytes = secretKey.getBytes();
-        if (keyBytes.length != 16) {
-            throw new IllegalArgumentException("AES key must be 16 bytes long");
-        }
-        return new SecretKeySpec(keyBytes, "AES");
-    }
-
-    @Override
-    public byte[] encrypt(byte[] data) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, getAesKey());
-            return cipher.doFinal(data);
-        } catch (Exception e) {
-            throw new RuntimeException("Error encrypting file", e);
-        }
-    }
-
-    @Override
-    public byte[] decrypt(byte[] encryptedData) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, getAesKey());
-            return cipher.doFinal(encryptedData);
-        } catch (Exception e) {
-            throw new RuntimeException("Error decrypting file", e);
-        }
-    }
-
-    // --------------------------------------------------
-    // AWS S3 Upload / Download
-    // --------------------------------------------------
-
-    @Override
-    public String uploadToS3(byte[] data, String path, String filename) {
-        String key = path + "/" + filename;
-
-        PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .contentLength((long) data.length)
-                .build();
-
-        s3Client.putObject(request, RequestBody.fromBytes(data));
-
-        return key; // return key instead of public URL (recommended for private buckets)
-    }
-
-    @Override
-    public byte[] downloadFromS3(String fileKeyOrUrl) {
-        // Assume fileKeyOrUrl is the S3 object key
-        GetObjectRequest request = GetObjectRequest.builder()
-                .bucket(bucketName)
-                .key(fileKeyOrUrl)
-                .build();
-
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            s3Client.getObject(request, software.amazon.awssdk.core.sync.ResponseTransformer.toOutputStream(outputStream));
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error downloading file from S3", e);
-        }
-    }
-
-    @Override
-    public String processAndUpload(MultipartFile file, String path) {
-        return "";
-    }
-
-    // --------------------------------------------------
-    // Combined Operations
-    // --------------------------------------------------
-
-    @Override
-    public String processAndUpload(MultipartFile file, String path) {
-        try {
-            // Step 1: Read file bytes
-            byte[] data = file.getBytes();
-
-            // Step 2: Compress
-            byte[] compressed = compress(data);
-
-            // Step 3: Encrypt
-            byte[] encrypted = encrypt(compressed);
-
-            // Step 4: Upload to S3
-            return uploadToS3(encrypted, path, file.getOriginalFilename());
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error processing and uploading file", e);
-        }
-    }
-
-    @Override
-    public byte[] downloadAndRestore(String fileKeyOrUrl) {
-        // Step 1: Download
-        byte[] encryptedData = downloadFromS3(fileKeyOrUrl);
-
-        // Step 2: Decrypt
-        byte[] decrypted = decrypt(encryptedData);
-
-        // Step 3: Decompress
-        return decompress(decrypted);
-    }*/
 }

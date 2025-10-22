@@ -8,12 +8,20 @@ import java.io.IOException;
 public interface FileService{
 
     /**
-     * Compress the provided file data using an GZIP  algorithm.
+     * Compress the provided file data using ImageIO.
      *
      * @param data Raw file bytes to compress.
      * @return Compressed file bytes.
      */
-    byte[] compress(byte[] data);
+    byte[] compressProfileImage(byte[] data) throws IOException;
+
+    /**
+     * Compress the provided file data using GZIP  algorithm.
+     *
+     * @param data Raw file bytes to compress.
+     * @return Compressed file bytes.
+     */
+    byte[] compressData(byte[] data) throws IOException;
 
     /**
      * Decompress previously compressed file data.
@@ -30,7 +38,15 @@ public interface FileService{
      * @param data     File bytes to upload (maybe compressed/encrypted).
      * @return Public URL or key of the uploaded file.
      */
-    String uploadToS3(MultipartFile data, String key, User user) throws IOException;
+    String uploadDataToS3(MultipartFile data, String key, User user) throws IOException;
+
+    /**
+     * Upload profile image to AWS S3.
+     *
+     * @param data     File bytes to upload (compressed).
+     * @return Public URL or key of the uploaded file.
+     */
+    String uploadProfileImageToS3(MultipartFile data, String key, User user) throws IOException;
 
     /**
      * Download file bytes from AWS S3.

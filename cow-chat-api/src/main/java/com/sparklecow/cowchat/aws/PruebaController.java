@@ -26,7 +26,7 @@ public class PruebaController {
     public ResponseEntity<String> uploadFile(@RequestParam String key,
                                              @RequestPart MultipartFile file,
                                              Authentication authentication) throws IOException {
-        return ResponseEntity.ok(fileService.uploadToS3(file, key, (User) authentication.getPrincipal()));
+        return ResponseEntity.ok(fileService.uploadProfileImageToS3(file, key, (User) authentication.getPrincipal()));
     }
 
     @PostMapping("/download")

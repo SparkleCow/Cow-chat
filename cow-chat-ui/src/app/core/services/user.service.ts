@@ -32,11 +32,9 @@ export class UserService {
 
   uploadUserImage(file: File): Observable<string> {
     const formData = new FormData();
-    formData.append('bucketName', 'cowchat-s3'); // nombre del bucket
-    formData.append('key', file.name);           // clave (puedes poner una carpeta, ej: users/)
-    formData.append('file', file);               // el archivo
-
-    return this.http.post(`${this.url}/test/upload`, formData, { responseType: 'text' });
+    formData.append('key', file.name);
+    formData.append('file', file);
+    return this.http.post(`${this.url}/user/upload`, formData, { responseType: 'text' });
   }
 
   updateUsername(newUsername: string): Observable<UserResponseDto> {

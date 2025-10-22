@@ -1,11 +1,13 @@
 package com.sparklecow.cowchat.user;
 
+import com.sparklecow.cowchat.common.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,6 +17,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final FileService fileService;
 
     @GetMapping()
     public ResponseEntity<List<UserResponseDto>> findAllUsersExceptSelf(Authentication authentication){
@@ -26,21 +29,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserLogged(authentication));
     }
 
-    @PutMapping("/image")
-    public ResponseEntity<?> updateProfileImage(
-            Authentication authentication,
-            @RequestParam("file") MultipartFile file) {
-        try {
-            String imageUrl = userService.updateProfileImage(authentication, file);
-            return ResponseEntity.ok().body(imageUrl);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam String key,
+                                             @RequestPart MultipartFile file,
+                                             Authentication authentication) throws IOException {
+        String imagePath = fileService.uploadProfileImageToS3(file, key, (User) authentication.getPrincipal());
+        return ResponseEntity.ok(userService.updateProfileImage(authentication, imagePath));
     }
 
-    /*
-    * TODO
-    *  update user information (self)
-    *  delete user account (self)
-    */
+
+
 }
