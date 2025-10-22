@@ -1,14 +1,19 @@
 package com.sparklecow.cowchat.user;
 
+import com.sparklecow.cowchat.aws.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
 public class UserMapper {
 
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     public User toUser(UserRequestDto userRequestDto) {
         return User
@@ -26,7 +31,10 @@ public class UserMapper {
                 user.getEmail(),
                 user.getImagePath(),
                 user.getLastSeen(),
-                user.isUserOnline()
+                user.isUserOnline(),
+                s3Service.generatePresignedDownloadUrl(
+                        user.getImagePath(), Duration.ofMinutes(15)
+                )
         );
     }
 }

@@ -10,7 +10,7 @@ public interface S3Service {
 
     void downloadFile(String key) throws IOException;
 
-    String generatePresignedUploadUrl(String bucketName, String key, Duration duration);
+    String generatePresignedUploadUrl(String key, Duration duration);
 
-    String generatePresignedDownloadUrl(String bucketName, String key, Duration duration);
+    String generatePresignedDownloadUrl(String key, Duration duration);
 }

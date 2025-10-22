@@ -43,7 +43,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
 
     this.userSub = this.userService.$findAllUsers().subscribe({
-      next: (users: UserResponseDto[]) => this.users = users,
+      next: (users: UserResponseDto[]) => {this.users = users;
+        console.log(users)
+      },
       error: (err) => console.error('Error al cargar usuarios:', err)
     });
 

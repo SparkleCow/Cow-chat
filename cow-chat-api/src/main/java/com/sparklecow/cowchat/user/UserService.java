@@ -1,10 +1,12 @@
 package com.sparklecow.cowchat.user;
 
+import com.sparklecow.cowchat.aws.S3Service;
 import com.sparklecow.cowchat.common.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -13,7 +15,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final FileService fileService;
+    private S3Service s3Service;
 
     public UserResponseDto findUserLogged(Authentication authentication){
         return userMapper.toUserResponseDto((User) authentication.getPrincipal());

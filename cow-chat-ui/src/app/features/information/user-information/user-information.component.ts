@@ -25,7 +25,7 @@ export class UserInformationComponent {
     this.form = this.fb.group({
       username: [this.user?.username || '', [Validators.required, Validators.minLength(3)]]
     });
-    this.previewUrl = this.user.imagePath ? this.user.imagePath : "";
+    this.previewUrl = this.user.presignedUrl ? this.user.presignedUrl : "";
   }
 
   onFileSelected(event: any): void {

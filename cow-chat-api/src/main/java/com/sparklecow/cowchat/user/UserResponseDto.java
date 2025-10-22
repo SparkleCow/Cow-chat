@@ -8,6 +8,7 @@ public record UserResponseDto(
         String email,
         String imagePath,
         LocalDateTime lastSeen,
-        boolean isOnline
+        boolean isOnline,
+        String presignedUrl
 ) {
 }

@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,22 +36,35 @@ public class FileServiceImp implements FileService{
 
     public byte[] compressProfileImage(byte[] inputBytes) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(inputBytes);
-        BufferedImage image = ImageIO.read(bais);
+        BufferedImage originalImage = ImageIO.read(bais);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
-
-        ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
-        writer.setOutput(ios);
-
-        ImageWriteParam param = writer.getDefaultWriteParam();
-        if (param.canWriteCompressed()) {
-            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(0.5f); // 0.0 = max compress, 1.0 = better quality
+        if (originalImage == null) {
+            throw new IOException("No se pudo leer la imagen de entrada");
         }
 
-        writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
-        writer.dispose();
+        BufferedImage rgbImage = new BufferedImage(
+                originalImage.getWidth(),
+                originalImage.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
+
+        Graphics2D g2d = rgbImage.createGraphics();
+        g2d.drawImage(originalImage, 0, 0, java.awt.Color.WHITE, null); // Fills the background to white if it was png
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (ImageOutputStream ios = ImageIO.createImageOutputStream(baos)) {
+            ImageWriter writer = ImageIO.getImageWritersByFormatName("jpg").next();
+            writer.setOutput(ios);
+
+            ImageWriteParam param = writer.getDefaultWriteParam();
+            if (param.canWriteCompressed()) {
+                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                param.setCompressionQuality(0.3f); // quality
+            }
+
+            writer.write(null, new javax.imageio.IIOImage(rgbImage, null, null), param);
+            writer.dispose();
+        }
 
         return baos.toByteArray();
     }

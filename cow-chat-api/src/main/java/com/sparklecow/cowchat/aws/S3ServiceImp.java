@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class S3ServiceImp implements S3Service{
 
     private final S3Client s3Client;
     private final AwsProperties awsProperties;
+    private final S3Presigner s3Presigner;
 
     @Value("${spring.destination.folder}")
     private String destinationFolder;
@@ -64,12 +69,29 @@ public class S3ServiceImp implements S3Service{
     }
 
     @Override
-    public String generatePresignedUploadUrl(String bucketName, String key, Duration duration) {
+    public String generatePresignedUploadUrl(String key, Duration duration) {
         return "";
     }
 
     @Override
-    public String generatePresignedDownloadUrl(String bucketName, String key, Duration duration) {
-        return "";
+    public String generatePresignedDownloadUrl(String key, Duration duration) {
+
+        if(key == null){
+            return null;
+        }
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(awsProperties.getBucket())
+                .key(key)
+                .build();
+
+        GetObjectPresignRequest getObjectPresignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(duration)
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        PresignedGetObjectRequest presignedGetObjectRequest =
+                s3Presigner.presignGetObject(getObjectPresignRequest);
+
+        return presignedGetObjectRequest.url().toString();
     }
 }

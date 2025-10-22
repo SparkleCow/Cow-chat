@@ -5,4 +5,5 @@ export interface UserResponseDto{
   imagePath: string;
   lastSeen: string;
   isOnline: boolean;
+  presignedUrl: string;
 }
