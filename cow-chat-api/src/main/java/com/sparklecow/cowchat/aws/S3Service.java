@@ -1,20 +1,14 @@
 package com.sparklecow.cowchat.aws;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
 
 public interface S3Service {
 
-    String createBucket(String bucketName);
+    Boolean uploadFile(String key, Path fileLocation);
 
-    String checkIfBucketExist(String bucketName);
-
-    List<String> getAllBuckets();
-
-    Boolean uploadFile(String bucketName, String key, Path fileLocation);
-
-    void downloadFile(String bucketName, String key) throws IndexOutOfBoundsException;
+    void downloadFile(String key) throws IOException;
 
     String generatePresignedUploadUrl(String bucketName, String key, Duration duration);
 

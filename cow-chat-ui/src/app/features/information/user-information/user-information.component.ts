@@ -40,25 +40,21 @@ export class UserInformationComponent {
   }
 
   uploadImage(): void {
-    if (!this.selectedFile) return;
+      if (!this.selectedFile) return;
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-
-    this.isLoading = true;
-    this.userService.uploadUserImage(formData).subscribe({
-      next: (updatedUser) => {
-        this.user = updatedUser;
-        this.previewUrl = updatedUser.imagePath;
-        this.isLoading = false;
-        alert('Imagen actualizada con éxito.');
-      },
-      error: (err) => {
-        console.error('Error al subir imagen:', err);
-        this.isLoading = false;
-      }
-    });
-  }
+      this.isLoading = true;
+      this.userService.uploadUserImage(this.selectedFile).subscribe({
+        next: (res) => {
+          console.log('✅ Imagen subida:', res);
+          this.isLoading = false;
+          alert('Imagen cargada correctamente.');
+        },
+        error: (err) => {
+          console.error('❌ Error al subir imagen:', err);
+          this.isLoading = false;
+        }
+      });
+    }
 
   updateUsername(): void {
     if (this.form.invalid) return;

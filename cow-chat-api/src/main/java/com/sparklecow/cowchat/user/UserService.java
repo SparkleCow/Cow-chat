@@ -35,16 +35,6 @@ public class UserService {
 
     public String updateProfileImage(Authentication authentication, MultipartFile file) {
         User user = (User) authentication.getPrincipal();
-        try {
-            /*Process file and upload at s3*/
-            String imageUrl = fileService.processAndUpload(file, "users/" + user.getId());
-
-            user.setImagePath(imageUrl);
-            userRepository.save(user);
-
-            return imageUrl;
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating profile image: " + e.getMessage(), e);
-        }
+        return "todo";
     }
 }

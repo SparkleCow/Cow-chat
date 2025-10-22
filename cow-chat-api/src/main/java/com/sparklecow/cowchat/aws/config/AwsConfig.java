@@ -1,4 +1,4 @@
-package com.sparklecow.cowchat.aws;
+package com.sparklecow.cowchat.aws.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -22,7 +22,7 @@ spring:
       max-request-size: 50MB
 
   destination:
-    folder: "src/main/resources/static/"
+    folder: src/main/resources/static/
 
 application:
   security:
@@ -32,9 +32,10 @@ application:
 
 aws:
   s3:
-    key: ${AWS.KEY}
-    secret: ${AWS.SECRET}
+    key: ${AWS_KEY}
+    secret: ${AWS_SECRET}
     region: us-east-2
+    bucket: ${BUCKET_NAME}
 
 logging:
   level:

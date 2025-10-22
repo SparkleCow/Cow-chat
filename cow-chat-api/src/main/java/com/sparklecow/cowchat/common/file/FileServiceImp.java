@@ -1,16 +1,30 @@
 package com.sparklecow.cowchat.common.file;
 
+import com.sparklecow.cowchat.aws.S3Service;
+import com.sparklecow.cowchat.aws.config.AwsProperties;
+import com.sparklecow.cowchat.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class FileServiceImp implements FileService{
 
-    private final S3Client s3Client;
+    private final S3Service s3Service;
+    private final AwsProperties awsProperties;
+
+    @Value("spring.destionation.folder")
+    private String destinationFolder;
 
     @Override
     public byte[] compress(byte[] data) {
@@ -23,18 +37,23 @@ public class FileServiceImp implements FileService{
     }
 
     @Override
-    public byte[] encrypt(byte[] data) {
-        return new byte[0];
-    }
+    public String uploadToS3(MultipartFile data, String key, User user) throws IOException {
+        Path path = Paths.get(destinationFolder);
+        if(!Files.exists(path)){
+            Files.createDirectories(path);
+        }
 
-    @Override
-    public byte[] decrypt(byte[] encryptedData) {
-        return new byte[0];
-    }
+        Path filePath = path.resolve(Objects.requireNonNull(data.getOriginalFilename()));
+        Path finalPath = Files.write(filePath, data.getBytes());
 
-    @Override
-    public String uploadToS3(byte[] data, String path, String filename) {
-        return "";
+        key = user.getUsername()+"/"+key;
+
+        if(s3Service.uploadFile(key, finalPath)){
+            Files.delete(filePath);
+            return "File uploaded successfully";
+        }
+
+        return "File could not be uploaded";
     }
 
     @Override
@@ -42,15 +61,6 @@ public class FileServiceImp implements FileService{
         return new byte[0];
     }
 
-    @Override
-    public String processAndUpload(MultipartFile file, String path) {
-        return "";
-    }
-
-    @Override
-    public byte[] downloadAndRestore(String fileUrl) {
-        return new byte[0];
-    }
 
     /*@Value("${aws.s3.bucket}")
     private String bucketName;

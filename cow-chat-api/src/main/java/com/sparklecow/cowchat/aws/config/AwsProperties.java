@@ -1,4 +1,4 @@
-package com.sparklecow.cowchat.aws;
+package com.sparklecow.cowchat.aws.config;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -20,4 +20,6 @@ public class AwsProperties {
     private String secret;
     @NotNull
     private String region;
+    @NotNull
+    private String bucket;
 }
