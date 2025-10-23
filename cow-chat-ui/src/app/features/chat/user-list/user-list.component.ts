@@ -1,25 +1,39 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserResponseDto } from '../../../models/user-response-dto';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
-export class UserListComponent {
+export class UserListComponent implements OnInit{
 
-  @Input() users: UserResponseDto[] = [];
   @Input() loggedUser!: UserResponseDto;
-  @Output() userId = new EventEmitter<string>();
+
+  users: UserResponseDto[] = [];
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService:UserService
   ) {}
 
+  ngOnInit(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (users:UserResponseDto[])=>{this.users = users
+             console.log("Que pasa chavaleeeeeeeeee");
+             console.log(users)
+
+      }
+    });
+
+    this.userService.loadAllUsers();
+  }
+
   openChat(user: UserResponseDto): void {
-    this.userId.emit(user.id);
+    this.userService.saveReceiverId(user.id)
     this.redirectAtChat();
   }
 

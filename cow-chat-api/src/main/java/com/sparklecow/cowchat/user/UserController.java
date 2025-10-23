@@ -36,7 +36,4 @@ public class UserController {
         String imagePath = fileService.uploadProfileImageToS3(file, key, (User) authentication.getPrincipal());
         return ResponseEntity.ok(userService.updateProfileImage(authentication, imagePath));
     }
-
-
-
 }

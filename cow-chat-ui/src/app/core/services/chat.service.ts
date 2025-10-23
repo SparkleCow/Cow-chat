@@ -19,7 +19,7 @@ export class ChatService {
   findChat(receiverUserId: string): void {
     const userId = {id: receiverUserId}
     this.http.post<ChatResponseDto>(`${this.url}/chat`, userId).subscribe({
-      next: (user) => this.chatSubject.next(user),
+      next: (chat) => this.chatSubject.next(chat),
       error: (err) => {
           console.error('Error al obtener usuario logueado:', err);
           this.chatSubject.next(null);

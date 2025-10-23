@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserResponseDto } from '../../models/user-response-dto';
 
 @Injectable({
@@ -11,14 +11,45 @@ export class UserService {
   //private url: string = "http://localhost:8080";
   private url: string = "http://192.168.1.2:8080";
 
+  /*Observable for logged user*/
   private userSubject = new BehaviorSubject<UserResponseDto | null>(null);
   public user$: Observable<UserResponseDto | null> = this.userSubject.asObservable();
 
+  /*Observable for contacts.*/
+  private usersSubject = new BehaviorSubject<UserResponseDto[]>([]);
+  public users$: Observable<UserResponseDto[]> = this.usersSubject.asObservable();
+
+  /* Observable for receiver ID */
+  private receiverIdSubject = new BehaviorSubject<string | null>(localStorage.getItem('receiverId'));
+  public receiverId$: Observable<string | null> = this.receiverIdSubject.asObservable();
+
   constructor(private http: HttpClient) {}
 
-  $findAllUsers(): Observable<UserResponseDto[]> {
-    return this.http.get<UserResponseDto[]>(`${this.url}/user`);
+  /**
+   * It loads all users if they are not already loaded
+   * If they are loaded, it will not the request again
+   */
+  loadAllUsers(forceReload: boolean = false): void {
+    if (this.usersSubject.value.length > 0 && !forceReload) {
+      return;
+    }
+
+    this.http.get<UserResponseDto[]>(`${this.url}/user`)
+      .pipe(
+        tap(users => this.usersSubject.next(users))
+      )
+      .subscribe({
+        error: (err) => console.error('Error al cargar usuarios:', err)
+      });
   }
+
+  /**
+   * Returns users observable
+  */
+  getAllUsers(): Observable<UserResponseDto[]> {
+    return this.users$;
+  }
+
 
   findUserLogged(): void {
     this.http.get<UserResponseDto>(`${this.url}/user/self`).subscribe({
@@ -41,7 +72,23 @@ export class UserService {
     return this.http.put<UserResponseDto>(`${this.url}/user/update-username`, { username: newUsername });
   }
 
+  /**
+   * Save the receiverId en in reactive memory and localStorage
+   */
+  saveReceiverId(receiverId: string): void {
+    localStorage.setItem('receiverId', receiverId);
+    this.receiverIdSubject.next(receiverId);
+  }
+
+  /**
+   * Returns the receiverId observable
+   */
+  getReceiverId(): Observable<string | null> {
+    return this.receiverId$;
+  }
+
   clearUser(): void {
     this.userSubject.next(null);
+    this.usersSubject.next([]);
   }
 }

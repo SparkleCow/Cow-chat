@@ -41,6 +41,7 @@ export class ChatPageComponent implements OnInit, OnDestroy{
         this.currentUserId = user ? user.id : '';
       }
     });
+
     this.userService.findUserLogged();
 
     this.chatSub = this.chatService.chat$.subscribe({
@@ -62,6 +63,14 @@ export class ChatPageComponent implements OnInit, OnDestroy{
         }
       }
     });
+
+    this.userService.getReceiverId().subscribe({
+    next: (receiverId) => {
+      if (receiverId) {
+        this.chatService.findChat(receiverId);
+      }
+    }
+  });
   }
 
   ngOnDestroy(): void {
@@ -71,6 +80,7 @@ export class ChatPageComponent implements OnInit, OnDestroy{
     }
     this.chatSub?.unsubscribe();
     this.chatSocketService.disconnect();
+    this.loggedUserSub?.unsubscribe();
   }
 
   sendMessage(): void {

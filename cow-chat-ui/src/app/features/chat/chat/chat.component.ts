@@ -6,7 +6,6 @@ import { ChatService } from '../../../core/services/chat.service';
 import { ChatSocketService } from '../../../core/services/chat-socket.service';
 import { UserResponseDto } from '../../../models/user-response-dto';
 import { ChatResponseDto } from '../../../models/chat-response-dto';
-import { AuthService } from '../../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { RouterOutlet } from '@angular/router';
@@ -42,12 +41,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.log("WebSocket listo para suscripciones de chat.");
     });
 
-    this.userSub = this.userService.$findAllUsers().subscribe({
-      next: (users: UserResponseDto[]) => {this.users = users;
-        console.log(users)
-      },
-      error: (err) => console.error('Error al cargar usuarios:', err)
+    this.userService.loadAllUsers();
+
+    this.userSub = this.userService.users$.subscribe({
+      next: (users) => this.users = users
     });
+
 
     this.userService.user$.subscribe({
       next: (user) => {
@@ -62,10 +61,5 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.userSub?.unsubscribe();
     this.chatSocketService.disconnect();
-  }
-
-  handleUserId(userId: string): void {
-    this.receiverUserId = userId;
-    this.chatService.findChat(userId);
   }
 }
